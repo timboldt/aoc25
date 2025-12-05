@@ -114,7 +114,7 @@ fn part2(input: &str) -> u64 {
 }
 
 fn main() {
-    let input = fs::read_to_string("inputs/day02.txt").expect("Failed to read input file");
+    let input = fs::read_to_string("../inputs/day02.txt").expect("Failed to read input file");
 
     println!("Part 1: {}", part1(&input));
     println!("Part 2: {}", part2(&input));

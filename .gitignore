@@ -1,7 +1,14 @@
 # Rust
-/target/
+rust/target/
 **/*.rs.bk
-Cargo.lock
+
+# Zig
+zig/zig-cache/
+zig/zig-out/
+zig/.zig-cache/
+
+# Go
+go/*/go.sum
 
 # IDE
 .idea/
