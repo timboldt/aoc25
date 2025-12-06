@@ -9,6 +9,8 @@ pub fn build(b: *std.Build) void {
         .{ .name = "day01", .src = "src/day01.zig" },
         .{ .name = "day02", .src = "src/day02.zig" },
         .{ .name = "day03", .src = "src/day03.zig" },
+        .{ .name = "day04", .src = "src/day04.zig" },
+        .{ .name = "day05", .src = "src/day05.zig" },
     }) |day| {
         const exe = b.addExecutable(.{
             .name = day.name,
@@ -37,7 +39,7 @@ pub fn build(b: *std.Build) void {
 
     // Add a master test step
     const test_step = b.step("test", "Run all tests");
-    for ([_][]const u8{ "day01", "day02", "day03" }) |day| {
+    for ([_][]const u8{ "day01", "day02", "day03", "day04", "day05" }) |day| {
         const tests = b.addTest(.{
             .root_module = b.createModule(.{
                 .root_source_file = b.path(b.fmt("src/{s}.zig", .{day})),

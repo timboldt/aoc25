@@ -125,7 +125,7 @@ func part2(input string) int64 {
 }
 
 func main() {
-	data, err := os.ReadFile("../inputs/day01.txt")
+	data, err := os.ReadFile("../../inputs/day01.txt")
 	if err != nil {
 		panic(err)
 	}
