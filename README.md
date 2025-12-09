@@ -2,6 +2,12 @@
 
 Solutions for Advent of Code 2025 in Rust, Zig, and Go.
 
+Every year, I try a different approach in order to, well, learn new approaches.
+
+This year, I'm using (okay, cheating with) AI in order to understand what modern AI can (and cannot) do.
+
+Update: Claude Sonnet 4.5 was able to do everything up to day 9, part 1. When it got to day 9, part 2 it started to choke.
+
 ## Structure
 
 ```
