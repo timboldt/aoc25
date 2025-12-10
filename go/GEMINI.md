@@ -66,4 +66,9 @@ When converting a standard solution to a visualization:
 *   **Day 01 (Safe Dial)**: Visualized (Rotating dial).
 *   **Day 02 (Pattern Search)**: Visualized (Fast scanning with numbers).
 *   **Day 03 (Battery Banks)**: Visualized (Stack-based greedy algorithm animation).
-*   **Day 04+**: Pending visualization.
+*   **Day 04 (Paper Rolls)**: Visualized (Grid-based removal simulation).
+*   **Day 05 (Range Merging)**: Visualized (Range merging logic).
+*   **Day 06 (Column Math)**: Visualized (Column-based parsing and solving).
+*   **Day 07 (Tachyon Beams)**: Visualized (Beam propagation and splitting).
+*   **Day 08 (Junction Boxes)**: Visualized (3D point clustering/MST animation).
+*   **Day 09+**: Pending visualization.
