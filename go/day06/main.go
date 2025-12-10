@@ -284,16 +284,17 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			vector.DrawFilledRect(screen, float32(x), float32(cy-ch*len(colData)/2), float32(cw), float32(ch*len(colData)), color.RGBA{40, 40, 60, 255}, false)
 		}
 
-				for r, char := range colData {
-					y := cy - (len(colData)/2 * ch) + r*ch
-					
-					// Highlight operator specially with a small box
-					if isCurrent && r == len(colData)-1 && char != ' ' {
-						vector.DrawFilledRect(screen, float32(x), float32(y), float32(cw), float32(ch), color.RGBA{255, 100, 100, 100}, false)
-					}
-					
-					ebitenutil.DebugPrintAt(screen, string(char), x, y)
-				}	}
+		for r, char := range colData {
+			y := cy - (len(colData) / 2 * ch) + r*ch
+
+			// Highlight operator specially with a small box
+			if isCurrent && r == len(colData)-1 && char != ' ' {
+				vector.DrawFilledRect(screen, float32(x), float32(y), float32(cw), float32(ch), color.RGBA{255, 100, 100, 100}, false)
+			}
+
+			ebitenutil.DebugPrintAt(screen, string(char), x, y)
+		}
+	}
 
 	// Draw solved result overlay
 	if g.state == "solving" {
