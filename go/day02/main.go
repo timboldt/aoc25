@@ -141,17 +141,17 @@ type Game struct {
 	currentRangeIdx int
 	currentID       uint64 // The number currently being processed
 
-	part1Sum    uint64
-	part2Sum    uint64
+	part1Sum uint64
+	part2Sum uint64
 
-	foundPart1  []uint64
-	foundPart2  []uint64
+	foundPart1 []uint64
+	foundPart2 []uint64
 
-	state          string // "iterating", "finished"
-	p1MatchResult  bool   // Result of last check for display
-	p2MatchResult  bool   // Result of last check for display
+	state         string // "iterating", "finished"
+	p1MatchResult bool   // Result of last check for display
+	p2MatchResult bool   // Result of last check for display
 
-	batchSize     int // how many IDs to process per update
+	batchSize int // how many IDs to process per update
 
 	windowWidth  int
 	windowHeight int
