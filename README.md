@@ -1,12 +1,31 @@
 # Advent of Code 2025
 
-Solutions for Advent of Code 2025 in Rust, Zig, and Go.
+Solutions for Advent of Code 2025 in Rust (plus a few in Go and Zig)
 
 Every year, I try a different approach in order to, well, learn new approaches.
 
 This year, I'm using (okay, cheating with) AI in order to understand what modern AI can (and cannot) do.
 
-Update: Claude Sonnet 4.5 was able to do everything up to day 9, part 1. When it got to day 9, part 2 it started to choke.
+P.S. If you want to learn, don't cheat by letting an LLM write a solution for you. Or at least try first and then if you get stuck, talk your ideas through with an LLM, and then go back and implement the new ideas. The reason I'm using an LLM this year is not to solve the puzzles but to learn about LLMs - this is probably not the reason you are participating in AOC, so don't do what I did.
+
+## AI Performance Comparison
+
+| Day | Claude Sonnet 4.5 | Gemini 3 Pro |
+|-----|-------------------|--------------|
+| 1   | ✅ ✅             | ⬜ ⬜       |
+| 2   | ✅ ✅             | ⬜ ⬜       |
+| 3   | ✅ ✅             | ⬜ ⬜       |
+| 4   | ✅ ✅             | ⬜ ⬜       |
+| 5   | ✅ ✅             | ⬜ ⬜       |
+| 6   | ✅ ✅             | ⬜ ⬜       |
+| 7   | ✅ ✅             | ⬜ ⬜       |
+| 8   | ✅ ✅             | ⬜ ⬜       |
+| 9   | ✅ ⚠️ (1)         | ⬜ ✅       |
+| 10  | ⬜ ⬜             | ⬜ ⬜       |
+| 11  | ⬜ ⬜             | ⬜ ⬜       |
+| 12  | ⬜ ⬜             | ⬜ ⬜       |
+
+(1) Claude came up with a correct answer in Rust, but it took forever to run. I had it rewrite it in Go and it worked after a couple of attempts. Then I had Gemini look at the problem and it proposed a lightning fast solution in Python. I then gave Gemini's Python code to Claude and it was able to make the Rust implementation much faster, using Gemini's solution.
 
 ## Structure
 
