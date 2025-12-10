@@ -10,20 +10,20 @@ P.S. If you want to learn, don't cheat by letting an LLM write a solution for yo
 
 ## AI Performance Comparison
 
-| Day | Claude Sonnet 4.5 | Gemini 3 Pro |
+| Day | Claude Sonnet 4.5<br>Implementation<br>In Rust | Gemini 3 Pro<br>Visualization<br>In Go |
 |-----|-------------------|--------------|
-| 1   | ✅ ✅             | ⬜ ⬜       |
-| 2   | ✅ ✅             | ⬜ ⬜       |
-| 3   | ✅ ✅             | ⬜ ⬜       |
-| 4   | ✅ ✅             | ⬜ ⬜       |
-| 5   | ✅ ✅             | ⬜ ⬜       |
-| 6   | ✅ ✅             | ⬜ ⬜       |
-| 7   | ✅ ✅             | ⬜ ⬜       |
-| 8   | ✅ ✅             | ⬜ ⬜       |
-| 9   | ✅ ⚠️ (1)         | ⬜ ✅       |
-| 10  | ⬜ ⬜             | ⬜ ⬜       |
-| 11  | ⬜ ⬜             | ⬜ ⬜       |
-| 12  | ⬜ ⬜             | ⬜ ⬜       |
+| 1   | ✅ ✅     | ✅       |
+| 2   | ✅ ✅     | ✅       |
+| 3   | ✅ ✅     | ⬜       |
+| 4   | ✅ ✅     | ⬜       |
+| 5   | ✅ ✅     | ⬜       |
+| 6   | ✅ ✅     | ⬜       |
+| 7   | ✅ ✅     | ⬜       |
+| 8   | ✅ ✅     | ⬜       |
+| 9   | ✅ ⚠️ (1) | ⬜       |
+| 10  | ⬜ ⬜     | ⬜.      |
+| 11  | ⬜ ⬜     | ⬜       |
+| 12  | ⬜ ⬜     | ⬜       |
 
 (1) Claude came up with a correct answer in Rust, but it took forever to run. I had it rewrite it in Go and it worked after a couple of attempts. Then I had Gemini look at the problem and it proposed a lightning fast solution in Python. I then gave Gemini's Python code to Claude and it was able to make the Rust implementation much faster, using Gemini's solution.
 
