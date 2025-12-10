@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet, VecDeque};
 use std::fs;
 
 fn parse_positions(input: &str) -> Vec<(i32, i32)> {
@@ -35,119 +35,128 @@ fn part1(input: &str) -> i64 {
     max_area
 }
 
-fn is_inside_polygon(point: (i32, i32), polygon: &[(i32, i32)]) -> bool {
-    // Ray casting algorithm: count how many times a ray crosses the polygon boundary
-    let (x, y) = point;
-    let n = polygon.len();
-    let mut inside = false;
-    let mut j = n - 1;
-
-    for i in 0..n {
-        let (xi, yi) = polygon[i];
-        let (xj, yj) = polygon[j];
-
-        if ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi) {
-            inside = !inside;
-        }
-
-        j = i;
-    }
-
-    inside
-}
-
 fn part2(input: &str) -> i64 {
-    let red_tiles = parse_positions(input.trim());
-    let n = red_tiles.len();
+    let points = parse_positions(input.trim());
+    let n = points.len();
 
-    // Create a set of red tiles for quick lookup
-    let red_set: HashSet<_> = red_tiles.iter().cloned().collect();
+    // 1. Coordinate Compression
+    let mut xs: Vec<i32> = points.iter().map(|&(x, _)| x).collect();
+    let mut ys: Vec<i32> = points.iter().map(|&(_, y)| y).collect();
+    xs.sort();
+    xs.dedup();
+    ys.sort();
+    ys.dedup();
 
-    // Build set of boundary tiles (edges between consecutive red tiles)
-    let mut boundary_tiles = HashSet::new();
-    for i in 0..n {
-        let next = (i + 1) % n;
-        let (x1, y1) = red_tiles[i];
-        let (x2, y2) = red_tiles[next];
+    let x_map: HashMap<i32, usize> = xs.iter().enumerate().map(|(i, &x)| (x, i)).collect();
+    let y_map: HashMap<i32, usize> = ys.iter().enumerate().map(|(i, &y)| (y, i)).collect();
 
-        if y1 == y2 {
-            // Same row - horizontal line
-            let min_x = x1.min(x2);
-            let max_x = x1.max(x2);
-            for x in min_x..=max_x {
-                boundary_tiles.insert((x, y1));
-            }
-        } else if x1 == x2 {
-            // Same column - vertical line
-            let min_y = y1.min(y2);
-            let max_y = y1.max(y2);
-            for y in min_y..=max_y {
-                boundary_tiles.insert((x1, y));
+    // 2. Create compressed grid (2*N+1 to represent lines and gaps)
+    let height = 2 * ys.len() + 1;
+    let width = 2 * xs.len() + 1;
+    let mut grid = vec![vec![false; width]; height]; // false = outside, true = boundary/inside
+
+    // 3. Draw boundaries on compressed grid
+    for k in 0..n {
+        let p1 = points[k];
+        let p2 = points[(k + 1) % n];
+
+        // Convert to grid indices (2*i + 1 for actual coordinates)
+        let c1 = x_map[&p1.0] * 2 + 1;
+        let r1 = y_map[&p1.1] * 2 + 1;
+        let c2 = x_map[&p2.0] * 2 + 1;
+        let r2 = y_map[&p2.1] * 2 + 1;
+
+        let r_min = r1.min(r2);
+        let r_max = r1.max(r2);
+        let c_min = c1.min(c2);
+        let c_max = c1.max(c2);
+
+        for r in r_min..=r_max {
+            for c in c_min..=c_max {
+                grid[r][c] = true;
             }
         }
     }
 
-    // Check if a tile is valid (red, green boundary, or inside polygon)
-    let is_valid_tile = |point: (i32, i32)| -> bool {
-        red_set.contains(&point)
-            || boundary_tiles.contains(&point)
-            || is_inside_polygon(point, &red_tiles)
-    };
+    // 4. Flood fill from (0,0) to mark all "outside" cells
+    let mut is_outside = HashSet::new();
+    let mut queue = VecDeque::new();
+    queue.push_back((0, 0));
+    is_outside.insert((0, 0));
 
-    // Build list of all candidate rectangles with their areas
-    let mut candidates = Vec::new();
-    for i in 0..n {
-        for j in (i + 1)..n {
-            let (x1, y1) = red_tiles[i];
-            let (x2, y2) = red_tiles[j];
+    while let Some((r, c)) = queue.pop_front() {
+        for (dr, dc) in [(-1, 0), (1, 0), (0, -1), (0, 1)] {
+            let nr = r as i32 + dr;
+            let nc = c as i32 + dc;
 
-            let min_x = x1.min(x2);
-            let max_x = x1.max(x2);
-            let min_y = y1.min(y2);
-            let max_y = y1.max(y2);
+            if nr >= 0 && nr < height as i32 && nc >= 0 && nc < width as i32 {
+                let nr = nr as usize;
+                let nc = nc as usize;
 
-            let width = (max_x - min_x + 1) as i64;
-            let height = (max_y - min_y + 1) as i64;
-            let area = width * height;
-
-            candidates.push((area, min_x, max_x, min_y, max_y));
-        }
-    }
-
-    // Sort by area descending
-    candidates.sort_by(|a, b| b.0.cmp(&a.0));
-
-    // Check rectangles from largest to smallest
-    let mut checked_count = 0;
-    for &(area, min_x, max_x, min_y, max_y) in &candidates {
-        // Skip rectangles that are too large (would take forever to check)
-        if area > 100_000_000 {
-            continue;
-        }
-
-        // Check if all tiles in rectangle are valid
-        let mut valid = true;
-        'outer: for x in min_x..=max_x {
-            for y in min_y..=max_y {
-                if !is_valid_tile((x, y)) {
-                    valid = false;
-                    break 'outer;
+                if !is_outside.contains(&(nr, nc)) && !grid[nr][nc] {
+                    is_outside.insert((nr, nc));
+                    queue.push_back((nr, nc));
                 }
             }
         }
+    }
 
-        if valid {
-            eprintln!("Found valid rectangle with area {} after checking {} candidates", area, checked_count + 1);
-            return area;
-        }
-
-        checked_count += 1;
-        if checked_count % 1000 == 0 {
-            eprintln!("Checked {} candidates, current area: {}", checked_count, area);
+    // 5. Build 2D prefix sum of "outside" cells
+    let mut prefix_sum = vec![vec![0i32; width]; height];
+    for r in 0..height {
+        for c in 0..width {
+            let val = if is_outside.contains(&(r, c)) { 1 } else { 0 };
+            let top = if r > 0 { prefix_sum[r - 1][c] } else { 0 };
+            let left = if c > 0 { prefix_sum[r][c - 1] } else { 0 };
+            let top_left = if r > 0 && c > 0 { prefix_sum[r - 1][c - 1] } else { 0 };
+            prefix_sum[r][c] = val + top + left - top_left;
         }
     }
 
-    0
+    // Helper function to check if a rectangle has no outside cells
+    let region_is_clean = |r1: usize, c1: usize, r2: usize, c2: usize| -> bool {
+        let mut total = prefix_sum[r2][c2];
+        if r1 > 0 {
+            total -= prefix_sum[r1 - 1][c2];
+        }
+        if c1 > 0 {
+            total -= prefix_sum[r2][c1 - 1];
+        }
+        if r1 > 0 && c1 > 0 {
+            total += prefix_sum[r1 - 1][c1 - 1];
+        }
+        total == 0
+    };
+
+    // 6. Check all pairs of red tiles
+    let mut max_area = 0i64;
+    let mapped: Vec<(usize, usize)> = points
+        .iter()
+        .map(|&(x, y)| (x_map[&x] * 2 + 1, y_map[&y] * 2 + 1))
+        .collect();
+
+    for i in 0..n {
+        for j in (i + 1)..n {
+            let (c1, r1) = mapped[i];
+            let (c2, r2) = mapped[j];
+
+            let r_min = r1.min(r2);
+            let r_max = r1.max(r2);
+            let c_min = c1.min(c2);
+            let c_max = c1.max(c2);
+
+            // Check if rectangle on compressed grid has no outside cells
+            if region_is_clean(r_min, c_min, r_max, c_max) {
+                // Calculate real area using original coordinates
+                let width = ((points[i].0 - points[j].0).abs() + 1) as i64;
+                let height = ((points[i].1 - points[j].1).abs() + 1) as i64;
+                let area = width * height;
+                max_area = max_area.max(area);
+            }
+        }
+    }
+
+    max_area
 }
 
 fn main() {
