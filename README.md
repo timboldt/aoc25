@@ -15,7 +15,7 @@ P.S. If you want to learn, don't cheat by letting an LLM write a solution for yo
 | 1   | ✅ ✅     | ✅       |
 | 2   | ✅ ✅     | ✅       |
 | 3   | ✅ ✅     | ✅       |
-| 4   | ✅ ✅     | ⬜       |
+| 4   | ✅ ✅     | ✅       |
 | 5   | ✅ ✅     | ⬜       |
 | 6   | ✅ ✅     | ⬜       |
 | 7   | ✅ ✅     | ⬜       |
