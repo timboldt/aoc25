@@ -23,3 +23,4 @@ go/*/go.sum
 
 # Advent of Code inputs (keep directory, ignore txt files)
 inputs/*.txt
+problemtext/*.txt
