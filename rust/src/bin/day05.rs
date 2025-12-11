@@ -26,10 +26,7 @@ fn parse_input(input: &str) -> (Vec<Range>, Vec<u64>) {
         })
         .collect();
 
-    let ids: Vec<u64> = parts[1]
-        .lines()
-        .map(|line| line.parse().unwrap())
-        .collect();
+    let ids: Vec<u64> = parts[1].lines().map(|line| line.parse().unwrap()).collect();
 
     (ranges, ids)
 }
@@ -41,9 +38,7 @@ fn is_fresh(id: u64, ranges: &[Range]) -> bool {
 fn part1(input: &str) -> usize {
     let (ranges, ids) = parse_input(input.trim());
 
-    ids.iter()
-        .filter(|&&id| is_fresh(id, &ranges))
-        .count()
+    ids.iter().filter(|&&id| is_fresh(id, &ranges)).count()
 }
 
 fn merge_ranges(ranges: &[Range]) -> Vec<Range> {

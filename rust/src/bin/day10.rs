@@ -1,6 +1,6 @@
-use std::fs;
-use std::ops::{Add, Sub, Mul, Div, Neg, AddAssign, SubAssign};
 use std::cmp::Ordering;
+use std::fs;
+use std::ops::{Add, AddAssign, Div, Mul, Neg, Sub, SubAssign};
 
 #[derive(Debug, Clone)]
 struct Machine {
@@ -42,7 +42,7 @@ impl Rat {
     fn one() -> Self {
         Rat { num: 1, den: 1 }
     }
-    
+
     fn from_i64(v: i64) -> Self {
         Rat::new(v as i128, 1)
     }
@@ -109,7 +109,10 @@ impl Div for Rat {
 impl Neg for Rat {
     type Output = Self;
     fn neg(self) -> Self {
-        Rat { num: -self.num, den: self.den }
+        Rat {
+            num: -self.num,
+            den: self.den,
+        }
     }
 }
 
@@ -135,7 +138,8 @@ fn gcd(mut a: i128, mut b: i128) -> i128 {
 }
 
 fn parse_machine(line: &str) -> Machine {
-    let parts: Vec<&str> = line.split(|c| c == '[' || c == ']' || c == '{' || c == '}')
+    let parts: Vec<&str> = line
+        .split(|c| c == '[' || c == ']' || c == '{' || c == '}')
         .filter(|s| !s.trim().is_empty())
         .collect();
 
@@ -175,8 +179,9 @@ fn parse_machine(line: &str) -> Machine {
         let open = cursor + start;
         if let Some(end) = line[open..].find(')') {
             let close = open + end;
-            let content = &line[open+1..close];
-            let indices: Vec<usize> = content.split(',')
+            let content = &line[open + 1..close];
+            let indices: Vec<usize> = content
+                .split(',')
                 .filter_map(|s| s.trim().parse().ok())
                 .collect();
             button_indices.push(indices);
@@ -197,7 +202,12 @@ fn parse_machine(line: &str) -> Machine {
         vec![]
     };
 
-    Machine { target, buttons, button_indices, targets }
+    Machine {
+        target,
+        buttons,
+        button_indices,
+        targets,
+    }
 }
 
 fn solve_machine(machine: &Machine) -> usize {
@@ -205,7 +215,11 @@ fn solve_machine(machine: &Machine) -> usize {
     let n_buttons = machine.buttons.len();
 
     if n_buttons == 0 {
-        return if machine.target.iter().all(|&b| !b) { 0 } else { usize::MAX };
+        return if machine.target.iter().all(|&b| !b) {
+            0
+        } else {
+            usize::MAX
+        };
     }
 
     // Create augmented matrix for Gaussian elimination over GF(2)
@@ -263,9 +277,7 @@ fn solve_machine(machine: &Machine) -> usize {
         is_pivot[col] = true;
     }
 
-    let free_vars: Vec<usize> = (0..n_buttons)
-        .filter(|&i| !is_pivot[i])
-        .collect();
+    let free_vars: Vec<usize> = (0..n_buttons).filter(|&i| !is_pivot[i]).collect();
 
     let n_free = free_vars.len();
     let mut min_presses = usize::MAX;
@@ -299,7 +311,11 @@ fn solve_joltage(machine: &Machine) -> i64 {
     let num_buttons = machine.button_indices.len();
 
     if num_buttons == 0 {
-        return if machine.targets.iter().all(|&v| v == 0) { 0 } else { i64::MAX };
+        return if machine.targets.iter().all(|&v| v == 0) {
+            0
+        } else {
+            i64::MAX
+        };
     }
     if machine.targets.iter().all(|&v| v == 0) {
         return 0;
@@ -385,28 +401,28 @@ fn solve_joltage(machine: &Machine) -> i64 {
 
     // Minimize sum
     let mut min_total = i64::MAX;
-    
+
     // Bounds for free variables
     let max_target = *machine.targets.iter().max().unwrap_or(&0);
-    let limit = max_target + 2; 
+    let limit = max_target + 2;
 
     // Search free variables
     let mut current_free_vals = vec![0i64; free_vars.len()];
-    
+
     // Optimization: if no free vars, just check the solution
     if free_vars.is_empty() {
         let mut valid = true;
         let mut sum = 0;
         for i in 0..num_buttons {
-             if let Some(pos) = pivot_cols.iter().position(|&c| c == i) {
-                 let r = pivot_rows[pos];
-                 let val = target_vec[r];
-                 if !val.is_integer() || val < Rat::zero() {
-                     valid = false;
-                     break;
-                 }
-                 sum += val.to_i64().unwrap();
-             }
+            if let Some(pos) = pivot_cols.iter().position(|&c| c == i) {
+                let r = pivot_rows[pos];
+                let val = target_vec[r];
+                if !val.is_integer() || val < Rat::zero() {
+                    valid = false;
+                    break;
+                }
+                sum += val.to_i64().unwrap();
+            }
         }
         if valid {
             return sum;
@@ -425,7 +441,7 @@ fn solve_joltage(machine: &Machine) -> i64 {
         limit,
         &mut current_free_vals,
         &mut min_total,
-        num_buttons
+        num_buttons,
     );
 
     min_total
@@ -484,7 +500,18 @@ fn solve_recursive(
 
     for val in 0..=limit {
         current_free_vals[idx] = val;
-        solve_recursive(idx + 1, free_vars, pivot_cols, pivot_rows, matrix, target_vec, limit, current_free_vals, min_total, num_buttons);
+        solve_recursive(
+            idx + 1,
+            free_vars,
+            pivot_cols,
+            pivot_rows,
+            matrix,
+            target_vec,
+            limit,
+            current_free_vals,
+            min_total,
+            num_buttons,
+        );
     }
 }
 
@@ -559,7 +586,8 @@ mod tests {
 
     #[test]
     fn test_joltage3() {
-        let machine = parse_machine("[.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}");
+        let machine =
+            parse_machine("[.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}");
         assert_eq!(solve_joltage(&machine), 11);
     }
 

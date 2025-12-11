@@ -108,7 +108,11 @@ fn part2(input: &str) -> i64 {
             let val = if is_outside.contains(&(r, c)) { 1 } else { 0 };
             let top = if r > 0 { prefix_sum[r - 1][c] } else { 0 };
             let left = if c > 0 { prefix_sum[r][c - 1] } else { 0 };
-            let top_left = if r > 0 && c > 0 { prefix_sum[r - 1][c - 1] } else { 0 };
+            let top_left = if r > 0 && c > 0 {
+                prefix_sum[r - 1][c - 1]
+            } else {
+                0
+            };
             prefix_sum[r][c] = val + top + left - top_left;
         }
     }

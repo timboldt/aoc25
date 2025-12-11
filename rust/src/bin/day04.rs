@@ -8,9 +8,14 @@ fn count_adjacent_papers(grid: &[Vec<char>], row: usize, col: usize) -> usize {
     let rows = grid.len() as i32;
     let cols = grid[0].len() as i32;
     let directions = [
-        (-1, -1), (-1, 0), (-1, 1),
-        (0, -1),           (0, 1),
-        (1, -1),  (1, 0),  (1, 1),
+        (-1, -1),
+        (-1, 0),
+        (-1, 1),
+        (0, -1),
+        (0, 1),
+        (1, -1),
+        (1, 0),
+        (1, 1),
     ];
 
     let mut count = 0;
