@@ -71,6 +71,6 @@ When converting a standard solution to a visualization:
 *   **Day 06 (Column Math)**: Visualized (Column-based parsing and solving).
 *   **Day 07 (Tachyon Beams)**: Visualized (Beam propagation and splitting).
 *   **Day 08 (Junction Boxes)**: Visualized (3D point clustering/MST animation).
-*   **Day 09**: Pending visualization.
+*   **Day 09 (Movie Theater)**: Visualized (Coordinate Compression & Scanline Grid).
 *   **Day 10 (Factory)**: Visualized (Interactive Lights and Counters with Auto-Solve).
 *   **Day 11+**: Pending.

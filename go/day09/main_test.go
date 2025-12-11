@@ -12,7 +12,7 @@ const example = `7,1
 7,3`
 
 func TestPart1(t *testing.T) {
-	result := part1(example)
+	result := part1(parsePositions(example))
 	expected := int64(50)
 	if result != expected {
 		t.Errorf("part1() = %d, want %d", result, expected)
@@ -20,7 +20,7 @@ func TestPart1(t *testing.T) {
 }
 
 func TestPart2(t *testing.T) {
-	result := part2(example)
+	result := part2(parsePositions(example))
 	expected := int64(24)
 	if result != expected {
 		t.Errorf("part2() = %d, want %d", result, expected)

@@ -20,7 +20,7 @@ P.S. If you want to learn, don't cheat by letting an LLM write a solution for yo
 | 6   | ✅ ✅     | ✅       |
 | 7   | ✅ ✅     | ✅       |
 | 8   | ✅ ✅     | ✅       |
-| 9   | ✅ ⚠️ (1) | ⬜       |
+| 9   | ✅ ⚠️ (1) | ✅       |
 | 10  | ✅ ❌ (2) | ✅       |
 | 11  | ⬜ ⬜     | ⬜       |
 | 12  | ⬜ ⬜     | ⬜       |
