@@ -5,8 +5,8 @@ This repository contains Go solutions for the Advent of Code 2025 challenges. Th
 ## Project Structure
 
 *   **`dayXX/`**: Directories containing the source code (`main.go`) and tests (`main_test.go`) for each day.
-    *   **`day01/` - `day03/`**: Currently feature fully implemented Ebitengine visualizations.
-    *   **`day04/` onwards**: Currently contain standard CLI-based solutions.
+    *   **`day01/` - `day08/`, `day10/`**: Currently feature fully implemented Ebitengine visualizations.
+    *   **`day09/`, `day11/` onwards**: Currently contain standard CLI-based solutions.
 *   **`go.mod` / `go.sum`**: Go module definitions and dependencies.
 *   **`../inputs/`**: (External to this module) Expected location for puzzle input text files (e.g., `day01.txt`).
 
@@ -18,11 +18,11 @@ This repository contains Go solutions for the Advent of Code 2025 challenges. Th
 
 ### Running a Solution/Visualization
 
-**For Visualized Days (Day 1-3):**
+**For Visualized Days:**
 These run as a GUI window.
 
 ```bash
-cd day01
+cd day10
 go run main.go
 ```
 
@@ -30,7 +30,7 @@ go run main.go
 These run in the terminal and output the answers.
 
 ```bash
-cd day04
+cd day09
 go run main.go
 ```
 
@@ -71,4 +71,6 @@ When converting a standard solution to a visualization:
 *   **Day 06 (Column Math)**: Visualized (Column-based parsing and solving).
 *   **Day 07 (Tachyon Beams)**: Visualized (Beam propagation and splitting).
 *   **Day 08 (Junction Boxes)**: Visualized (3D point clustering/MST animation).
-*   **Day 09+**: Pending visualization.
+*   **Day 09**: Pending visualization.
+*   **Day 10 (Factory)**: Visualized (Interactive Lights and Counters with Auto-Solve).
+*   **Day 11+**: Pending.
