@@ -71,9 +71,9 @@ fn part2(input: &str) -> i64 {
         let c_min = c1.min(c2);
         let c_max = c1.max(c2);
 
-        for r in r_min..=r_max {
-            for c in c_min..=c_max {
-                grid[r][c] = true;
+        for row in grid.iter_mut().skip(r_min).take(r_max - r_min + 1) {
+            for cell in row.iter_mut().skip(c_min).take(c_max - c_min + 1) {
+                *cell = true;
             }
         }
     }

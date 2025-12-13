@@ -17,8 +17,12 @@ fn parse_and_solve(input: &str) -> i64 {
             columns[col_idx].push(ch);
         }
         // Pad shorter lines with spaces
-        for col_idx in chars.len()..max_len {
-            columns[col_idx].push(' ');
+        for column in columns
+            .iter_mut()
+            .skip(chars.len())
+            .take(max_len - chars.len())
+        {
+            column.push(' ');
         }
     }
 
@@ -80,10 +84,10 @@ fn solve_problem(problem: &[Vec<char>]) -> Option<i64> {
             .map(|col| col.get(row_idx).copied().unwrap_or(' '))
             .collect();
         let trimmed = row_str.trim();
-        if !trimmed.is_empty() {
-            if let Ok(num) = trimmed.parse::<i64>() {
-                numbers.push(num);
-            }
+        if !trimmed.is_empty()
+            && let Ok(num) = trimmed.parse::<i64>()
+        {
+            numbers.push(num);
         }
     }
 
@@ -128,10 +132,10 @@ fn solve_problem_part2(problem: &[Vec<char>]) -> Option<i64> {
             }
         }
 
-        if !digit_str.is_empty() {
-            if let Ok(num) = digit_str.parse::<i64>() {
-                numbers.push(num);
-            }
+        if !digit_str.is_empty()
+            && let Ok(num) = digit_str.parse::<i64>()
+        {
+            numbers.push(num);
         }
     }
 
@@ -170,8 +174,12 @@ fn part2(input: &str) -> i64 {
             columns[col_idx].push(ch);
         }
         // Pad shorter lines with spaces
-        for col_idx in chars.len()..max_len {
-            columns[col_idx].push(' ');
+        for column in columns
+            .iter_mut()
+            .skip(chars.len())
+            .take(max_len - chars.len())
+        {
+            column.push(' ');
         }
     }
 

@@ -26,7 +26,7 @@ fn simulate_beams(grid: &[Vec<char>]) -> usize {
     current_beams.insert(start_col);
 
     // Simulate beam movement row by row
-    for row in (start_row + 1)..height {
+    for row_data in grid.iter().skip(start_row + 1).take(height - start_row - 1) {
         let mut next_beams: HashSet<usize> = HashSet::new();
 
         for &col in &current_beams {
@@ -34,7 +34,7 @@ fn simulate_beams(grid: &[Vec<char>]) -> usize {
                 continue;
             }
 
-            if grid[row][col] == '^' {
+            if row_data[col] == '^' {
                 // Beam hits a splitter
                 split_count += 1;
 

@@ -145,7 +145,7 @@ mod tests {
 
         assert!(!is_repeated_pattern(101));
         assert!(!is_repeated_pattern(1698522));
-        assert!(!is_repeated_pattern(0101)); // This is actually 101, not valid
+        assert!(!is_repeated_pattern(101)); // This is actually 101, not valid
     }
 
     #[test]

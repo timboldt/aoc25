@@ -23,10 +23,13 @@ fn count_adjacent_papers(grid: &[Vec<char>], row: usize, col: usize) -> usize {
         let new_row = row as i32 + dr;
         let new_col = col as i32 + dc;
 
-        if new_row >= 0 && new_row < rows && new_col >= 0 && new_col < cols {
-            if grid[new_row as usize][new_col as usize] == '@' {
-                count += 1;
-            }
+        if new_row >= 0
+            && new_row < rows
+            && new_col >= 0
+            && new_col < cols
+            && grid[new_row as usize][new_col as usize] == '@'
+        {
+            count += 1;
         }
     }
     count

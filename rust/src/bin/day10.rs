@@ -51,7 +51,7 @@ impl Rat {
         self.den == 1
     }
 
-    fn to_i64(&self) -> Option<i64> {
+    fn to_i64(self) -> Option<i64> {
         if self.is_integer() && self.num >= i64::MIN as i128 && self.num <= i64::MAX as i128 {
             Some(self.num as i64)
         } else {
@@ -139,7 +139,7 @@ fn gcd(mut a: i128, mut b: i128) -> i128 {
 
 fn parse_machine(line: &str) -> Machine {
     let parts: Vec<&str> = line
-        .split(|c| c == '[' || c == ']' || c == '{' || c == '}')
+        .split(['[', ']', '{', '}'])
         .filter(|s| !s.trim().is_empty())
         .collect();
 
@@ -161,10 +161,10 @@ fn parse_machine(line: &str) -> Machine {
             let mut button_mask = vec![false; num_lights];
 
             for num_str in s.split(',') {
-                if let Ok(idx) = num_str.trim().parse::<usize>() {
-                    if idx < num_lights {
-                        button_mask[idx] = true;
-                    }
+                if let Ok(idx) = num_str.trim().parse::<usize>()
+                    && idx < num_lights
+                {
+                    button_mask[idx] = true;
                 }
             }
 
@@ -225,11 +225,11 @@ fn solve_machine(machine: &Machine) -> usize {
     // Create augmented matrix for Gaussian elimination over GF(2)
     let mut matrix = vec![vec![false; n_buttons + 1]; n_lights];
 
-    for light in 0..n_lights {
-        for button in 0..n_buttons {
-            matrix[light][button] = machine.buttons[button][light];
+    for (light, row) in matrix.iter_mut().enumerate().take(n_lights) {
+        for (button, cell) in row.iter_mut().enumerate().take(n_buttons) {
+            *cell = machine.buttons[button][light];
         }
-        matrix[light][n_buttons] = machine.target[light];
+        row[n_buttons] = machine.target[light];
     }
 
     // Gaussian elimination
@@ -238,8 +238,8 @@ fn solve_machine(machine: &Machine) -> usize {
 
     for col in 0..n_buttons {
         let mut pivot_row = None;
-        for r in row..n_lights {
-            if matrix[r][col] {
+        for (r, matrix_row) in matrix.iter().enumerate().skip(row).take(n_lights - row) {
+            if matrix_row[col] {
                 pivot_row = Some(r);
                 break;
             }
@@ -257,8 +257,14 @@ fn solve_machine(machine: &Machine) -> usize {
 
         for r in 0..n_lights {
             if r != row && matrix[r][col] {
-                for c in 0..=n_buttons {
-                    matrix[r][c] ^= matrix[row][c];
+                let (before, after) = matrix.split_at_mut(row.max(r));
+                let (pivot_row, target_row) = if row < r {
+                    (&before[row], &mut after[r - row - 1])
+                } else {
+                    (&after[0], &mut before[r])
+                };
+                for (target_cell, &pivot_cell) in target_row.iter_mut().zip(pivot_row.iter()) {
+                    *target_cell ^= pivot_cell;
                 }
             }
         }
@@ -266,8 +272,8 @@ fn solve_machine(machine: &Machine) -> usize {
         row += 1;
     }
 
-    for r in row..n_lights {
-        if matrix[r][n_buttons] {
+    for matrix_row in matrix.iter().skip(row).take(n_lights - row) {
+        if matrix_row[n_buttons] {
             return usize::MAX;
         }
     }
@@ -342,8 +348,8 @@ fn solve_joltage(machine: &Machine) -> i64 {
 
     for col in 0..num_buttons {
         let mut pivot_row = None;
-        for r in row..num_counters {
-            if matrix[r][col] != Rat::zero() {
+        for (r, matrix_row) in matrix.iter().enumerate().skip(row).take(num_counters - row) {
+            if matrix_row[col] != Rat::zero() {
                 pivot_row = Some(r);
                 break;
             }
@@ -363,8 +369,8 @@ fn solve_joltage(machine: &Machine) -> i64 {
 
         // Normalize pivot
         let pivot_val = matrix[row][col];
-        for c in col..num_buttons {
-            matrix[row][c] = matrix[row][c] / pivot_val;
+        for cell in matrix[row].iter_mut().skip(col).take(num_buttons - col) {
+            *cell = *cell / pivot_val;
         }
         target_vec[row] = target_vec[row] / pivot_val;
 
@@ -375,8 +381,13 @@ fn solve_joltage(machine: &Machine) -> i64 {
         for r in 0..num_counters {
             if r != row && matrix[r][col] != Rat::zero() {
                 let factor = matrix[r][col];
-                for c in col..num_buttons {
-                    matrix[r][c] -= factor * pivot_row_vals[c];
+                for (cell, &pivot_val) in matrix[r]
+                    .iter_mut()
+                    .zip(pivot_row_vals.iter())
+                    .skip(col)
+                    .take(num_buttons - col)
+                {
+                    *cell -= factor * pivot_val;
                 }
                 target_vec[r] -= factor * pivot_target;
             }
@@ -386,8 +397,8 @@ fn solve_joltage(machine: &Machine) -> i64 {
     }
 
     // Check inconsistency
-    for r in row..num_counters {
-        if target_vec[r] != Rat::zero() {
+    for target_val in target_vec.iter().skip(row).take(num_counters - row) {
+        if *target_val != Rat::zero() {
             return i64::MAX;
         }
     }
@@ -431,41 +442,44 @@ fn solve_joltage(machine: &Machine) -> i64 {
         }
     }
 
-    solve_recursive(
-        0,
-        &free_vars,
-        &pivot_cols,
-        &pivot_rows,
-        &matrix,
-        &target_vec,
+    let ctx = SolveContext {
+        free_vars: &free_vars,
+        pivot_cols: &pivot_cols,
+        pivot_rows: &pivot_rows,
+        matrix: &matrix,
+        target_vec: &target_vec,
         limit,
-        &mut current_free_vals,
-        &mut min_total,
         num_buttons,
-    );
+    };
+
+    solve_recursive(0, &ctx, &mut current_free_vals, &mut min_total);
 
     min_total
 }
 
+struct SolveContext<'a> {
+    free_vars: &'a [usize],
+    pivot_cols: &'a [usize],
+    pivot_rows: &'a [usize],
+    matrix: &'a [Vec<Rat>],
+    target_vec: &'a [Rat],
+    limit: i64,
+    num_buttons: usize,
+}
+
 fn solve_recursive(
     idx: usize,
-    free_vars: &[usize],
-    pivot_cols: &[usize],
-    pivot_rows: &[usize],
-    matrix: &[Vec<Rat>],
-    target_vec: &[Rat],
-    limit: i64,
+    ctx: &SolveContext,
     current_free_vals: &mut [i64],
     min_total: &mut i64,
-    num_buttons: usize,
 ) {
-    if idx == free_vars.len() {
+    if idx == ctx.free_vars.len() {
         // Calculate pivot variables
-        let mut current_solution = vec![0i64; num_buttons];
+        let mut current_solution = vec![0i64; ctx.num_buttons];
         let mut sum = 0;
 
         // Set free vars
-        for (i, &fv) in free_vars.iter().enumerate() {
+        for (i, &fv) in ctx.free_vars.iter().enumerate() {
             current_solution[fv] = current_free_vals[i];
             sum += current_free_vals[i];
         }
@@ -473,11 +487,11 @@ fn solve_recursive(
         // Calculate pivots
         // x_pivot = target[row] - sum(matrix[row][free] * x_free)
         let mut valid = true;
-        for (i, &pc) in pivot_cols.iter().enumerate() {
-            let row = pivot_rows[i];
-            let mut val = target_vec[row];
-            for (j, &fv) in free_vars.iter().enumerate() {
-                let coeff = matrix[row][fv];
+        for (i, &pc) in ctx.pivot_cols.iter().enumerate() {
+            let row = ctx.pivot_rows[i];
+            let mut val = ctx.target_vec[row];
+            for (j, &fv) in ctx.free_vars.iter().enumerate() {
+                let coeff = ctx.matrix[row][fv];
                 if coeff != Rat::zero() {
                     val -= coeff * Rat::from_i64(current_free_vals[j]);
                 }
@@ -498,20 +512,9 @@ fn solve_recursive(
         return;
     }
 
-    for val in 0..=limit {
+    for val in 0..=ctx.limit {
         current_free_vals[idx] = val;
-        solve_recursive(
-            idx + 1,
-            free_vars,
-            pivot_cols,
-            pivot_rows,
-            matrix,
-            target_vec,
-            limit,
-            current_free_vals,
-            min_total,
-            num_buttons,
-        );
+        solve_recursive(idx + 1, ctx, current_free_vals, min_total);
     }
 }
 

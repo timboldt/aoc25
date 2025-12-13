@@ -5,8 +5,7 @@ This repository contains Go solutions for the Advent of Code 2025 challenges. Th
 ## Project Structure
 
 *   **`dayXX/`**: Directories containing the source code (`main.go`) and tests (`main_test.go`) for each day.
-    *   **`day01/` - `day11/`**: Currently feature fully implemented Ebitengine visualizations.
-    *   **`day12/` onwards**: Currently contain standard CLI-based solutions.
+    *   **`day01/` - `day12/`**: Currently feature fully implemented Ebitengine visualizations.
 *   **`go.mod` / `go.sum`**: Go module definitions and dependencies.
 *   **`../inputs/`**: (External to this module) Expected location for puzzle input text files (e.g., `day01.txt`).
 
@@ -74,4 +73,4 @@ When converting a standard solution to a visualization:
 *   **Day 09 (Movie Theater)**: Visualized (Coordinate Compression & Scanline Grid).
 *   **Day 10 (Factory)**: Visualized (Interactive Lights and Counters with Auto-Solve).
 *   **Day 11 (Reactor)**: Visualized (Graph Flow Animation).
-*   **Day 12+**: Pending.
+*   **Day 12 (Present Packing)**: Visualized (Backtracking tiling puzzle).

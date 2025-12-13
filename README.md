@@ -23,13 +23,15 @@ P.S. If you want to learn, don't cheat by letting an LLM write a solution for yo
 | 9   | ✅ ⚠️ (1) | ✅       |
 | 10  | ✅ ❌ (2) | ✅       |
 | 11  | ✅ ⚠️ (3) | ✅       |
-| 12  | ⬜ ⬜     | ⬜       |
+| 12  | ❌    (4) | ✅       |
 
 (1) Claude came up with a correct answer in Rust, but it took forever to run. I had it rewrite it in Go and it worked after a couple of attempts. Then I had Gemini look at the problem and it proposed a lightning fast solution in Python. I then gave Gemini's Python code to Claude and it was able to make the Rust implementation much faster, using Gemini's solution.
 
 (2) Claude couldn't solve it correctly, even with coaching and suggestions from Gemini. I then used Gemini's CLI and it worked with no coaching required.
 
 (3) Claude came up with a correct answer in Rust, but it took forever to run. I instead solved it in Go with Gemini, got the answer and then told Claude. Once Claude realized the answer was a enormous number, it rethought its approach and came up with a working one.
+
+(4) Claude couldn't solve it correctly, even with coaching and suggestions from Gemini. I eventually had it port over Gemini's Go solution.
 
 ## Structure
 
