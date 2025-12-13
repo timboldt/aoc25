@@ -257,10 +257,11 @@ fn solve_machine(machine: &Machine) -> usize {
 
         for r in 0..n_lights {
             if r != row && matrix[r][col] {
-                let (before, after) = matrix.split_at_mut(row.max(r));
                 let (pivot_row, target_row) = if row < r {
+                    let (before, after) = matrix.split_at_mut(row + 1);
                     (&before[row], &mut after[r - row - 1])
                 } else {
+                    let (before, after) = matrix.split_at_mut(row);
                     (&after[0], &mut before[r])
                 };
                 for (target_cell, &pivot_cell) in target_row.iter_mut().zip(pivot_row.iter()) {
